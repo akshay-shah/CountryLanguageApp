@@ -28,3 +28,10 @@ The app is structured following the MVVM (Model-View-ViewModel) architecture and
 
 - Unit tests are written for the ViewModel and Repository layers to ensure the reliability of the app.
 - (Optional) UI tests can be added to test the user interface and interactions.
+
+## Screenshots
+
+<img src="images/Screenshot_20240220_213323.png" width="200" alt="List Screen"><img src="images/Screenshot_20240220_213409.png" width="200" alt="Expanded List Screen">
+<img src="images/Screenshot_20240220_213534.png" width="200" alt="Loading Screen"><img src="images/Screenshot_20240220_213809.png" width="200" alt="Error Screen">
+
+
