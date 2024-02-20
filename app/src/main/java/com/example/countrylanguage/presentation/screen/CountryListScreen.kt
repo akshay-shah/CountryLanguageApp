@@ -46,12 +46,13 @@ fun CountriesListScreen(viewModel: MainViewModel = viewModel()) {
         }
 
         is Result.Error -> {
-            Text(
-                text = "Error: ${(countriesResult as Result.Error).msg}",
-                modifier = Modifier
-                    .fillMaxWidth(1f)
-                    .fillMaxHeight(1f)
-            )
+            Box(modifier = Modifier.fillMaxSize()) {
+                Text(
+                    text = "Error: Please try again later",
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                )
+            }
         }
 
         is Result.Success -> {
