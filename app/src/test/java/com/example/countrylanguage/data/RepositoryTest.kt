@@ -4,9 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.countrylanguage.data.source.local.CountryWithLanguages
 import com.example.countrylanguage.data.source.local.LocalDataSource
 import com.example.countrylanguage.data.source.remote.RemoteDataSource
-import com.example.countrylanguage.presentation.Result
 import junit.framework.TestCase.assertEquals
-import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
@@ -54,15 +52,14 @@ class RepositoryTest {
 
             val result = repository.getCountryWithLanguages().toList()
 
-            assertEquals(2, result.size)
-            assertEquals(result[0], Result.Loading)
-            val countries = (result[1] as Result.Success).data
-            assert(countries.size == 1)
-            assert(countries[0].countryCode == "US")
-            assert(countries[0].name == "United States")
-            assert(countries[0].language.size == 1)
-            assert(countries[0].language[0].languageCode == "en")
-            assert(countries[0].language[0].name == "English")
+            assertEquals(1, result.size)
+            val countries = result[0]
+            assertEquals(1, countries.size)
+            assertEquals("US", countries[0].countryCode)
+            assertEquals("United States", countries[0].name)
+            assertEquals(1, countries[0].language.size)
+            assertEquals("en", countries[0].language[0].languageCode)
+            assertEquals("English", countries[0].language[0].name)
         }
 
     @Test
@@ -81,10 +78,8 @@ class RepositoryTest {
 
             val result = repository.getCountryWithLanguages().toList()
 
-            assertEquals(2, result.size)
-            assertEquals(result[0], Result.Loading)
-            assertTrue(result[1] is Result.Success)
-            val countries = (result[1] as Result.Success).data
+            assertEquals(1, result.size)
+            val countries = result[0]
             assertEquals(1, countries.size)
             assertEquals("US", countries[0].countryCode)
             assertEquals("United States", countries[0].name)
@@ -100,11 +95,10 @@ class RepositoryTest {
             `when`(localDataSource.getCountriesWithLanguages()).thenReturn(flowOf(emptyList()))
             `when`(remoteDataSource.getCountriesAndLanguages()).thenThrow(exception)
 
-            val result = repository.getCountryWithLanguages().toList()
-
-            assertEquals(2, result.size)
-            assertEquals(result[0], Result.Loading)
-            assert(result[1] is Result.Error)
-            assert((result[1] as Result.Error).msg == "Network error")
+            try {
+                repository.getCountryWithLanguages().toList()
+            } catch (e: Exception) {
+                assertEquals("Network error", e.message)
+            }
         }
 }

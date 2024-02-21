@@ -4,11 +4,10 @@ import com.example.countrylanguage.data.model.CountryLanguageDataEntity
 import com.example.countrylanguage.data.source.local.CountryWithLanguages
 import com.example.countrylanguage.data.source.local.LocalDataSource
 import com.example.countrylanguage.data.source.remote.RemoteDataSource
-import com.example.countrylanguage.model.Country
-import com.example.countrylanguage.model.Language
-import com.example.countrylanguage.presentation.Result
+import com.example.countrylanguage.domain.IRepository
+import com.example.countrylanguage.domain.model.Country
+import com.example.countrylanguage.domain.model.Language
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
@@ -19,19 +18,20 @@ typealias LanguageModel = com.example.countrylanguage.data.source.local.Language
 class Repository @Inject constructor(
     private val local: LocalDataSource,
     private val remote: RemoteDataSource
-) {
+) : IRepository {
 
-    suspend fun getCountryWithLanguages(): Flow<Result<List<Country>>> = flow {
-        emit(Result.Loading)
-        val localData = local.getCountriesWithLanguages().first()
-        if (localData.isEmpty()) {
-            val response = remote.getCountriesAndLanguages()
-            val countryWithLanguage = response.body()?.data?.toDbModel() ?: emptyList()
-            local.saveCountriesWithLanguages(countryWithLanguage)
+    override suspend fun getCountryWithLanguages(): Flow<List<Country>> = flow {
+        try {
+            val localData = local.getCountriesWithLanguages().first()
+            if (localData.isEmpty()) {
+                val response = remote.getCountriesAndLanguages()
+                val countryWithLanguage = response.body()?.data?.toDbModel() ?: emptyList()
+                local.saveCountriesWithLanguages(countryWithLanguage)
+            }
+            emit(local.getCountriesWithLanguages().first().map { it.toDomainModel() })
+        } catch (exception: Exception) {
+            throw exception
         }
-        emit(Result.Success(local.getCountriesWithLanguages().first().map { it.toDomainModel() }))
-    }.catch { e ->
-        emit(Result.Error(e.message.toString()))
     }
 
     private fun CountryWithLanguages.toDomainModel(): Country = Country(

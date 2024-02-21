@@ -1,4 +1,4 @@
-package com.example.countrylanguage.model
+package com.example.countrylanguage.domain.model
 
 
 data class Language(
