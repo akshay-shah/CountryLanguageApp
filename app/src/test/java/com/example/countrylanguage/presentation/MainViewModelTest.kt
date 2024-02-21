@@ -1,7 +1,7 @@
 package com.example.countrylanguage.presentation
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.example.countrylanguage.data.Repository
+import com.example.countrylanguage.domain.usecase.GetCountriesWithLanguageUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
@@ -28,7 +28,7 @@ class MainViewModelTest {
     var rule: TestRule = InstantTaskExecutorRule()
 
     @Mock
-    private lateinit var repository: Repository
+    private lateinit var useCase: GetCountriesWithLanguageUseCase
 
     private lateinit var viewModel: MainViewModel
 
@@ -46,10 +46,10 @@ class MainViewModelTest {
     fun `countries flow should emit Result_Success when repository returns success`() = runTest {
         val countries = listOf(viewModelCountryListMock)
         val flow = flowOf(Result.Success(countries))
-        `when`(repository.getCountryWithLanguages()).thenReturn(flow)
+        `when`(useCase.invoke()).thenReturn(flow)
 
 
-        viewModel = MainViewModel(repository)
+        viewModel = MainViewModel(useCase)
 
 
         val result = viewModel.countries.value
@@ -61,10 +61,10 @@ class MainViewModelTest {
     @Test
     fun `countries flow should emit Result_Error when repository returns error`() = runTest {
         val flow = flowOf(Result.Error("Unknown Error"))
-        `when`(repository.getCountryWithLanguages()).thenReturn(flow)
+        `when`(useCase.invoke()).thenReturn(flow)
 
 
-        val viewModel = MainViewModel(repository)
+        val viewModel = MainViewModel(useCase)
 
 
         val result = viewModel.countries.value
@@ -75,10 +75,10 @@ class MainViewModelTest {
     @Test
     fun `countries flow should emit Result_Loading when repository returns loading`() = runTest {
         val flow = flowOf(Result.Loading)
-        `when`(repository.getCountryWithLanguages()).thenReturn(flow)
+        `when`(useCase.invoke()).thenReturn(flow)
 
 
-        val viewModel = MainViewModel(repository)
+        val viewModel = MainViewModel(useCase)
 
 
         val result = viewModel.countries.value

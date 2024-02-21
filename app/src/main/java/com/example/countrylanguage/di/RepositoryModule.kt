@@ -5,6 +5,7 @@ import com.example.countrylanguage.data.source.local.CountryLanguageDao
 import com.example.countrylanguage.data.source.local.LocalDataSource
 import com.example.countrylanguage.data.source.remote.ApiService
 import com.example.countrylanguage.data.source.remote.RemoteDataSource
+import com.example.countrylanguage.domain.IRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -25,7 +26,7 @@ object RepositoryModule {
     }
 
     @Provides
-    fun provideRepository(local: LocalDataSource, remote: RemoteDataSource): Repository {
+    fun provideRepository(local: LocalDataSource, remote: RemoteDataSource): IRepository {
         return Repository(local, remote)
     }
 }

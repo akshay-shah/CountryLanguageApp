@@ -1,7 +1,7 @@
 package com.example.countrylanguage.presentation
 
-import com.example.countrylanguage.model.Country
-import com.example.countrylanguage.model.Language
+import com.example.countrylanguage.domain.model.Country
+import com.example.countrylanguage.domain.model.Language
 
 val viewModelCountryListMock = Country(
     countryCode = "in",

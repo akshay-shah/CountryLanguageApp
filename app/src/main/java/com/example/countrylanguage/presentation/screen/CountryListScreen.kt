@@ -28,7 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.countrylanguage.model.Country
+import com.example.countrylanguage.domain.model.Country
 import com.example.countrylanguage.presentation.MainViewModel
 import com.example.countrylanguage.presentation.Result
 
