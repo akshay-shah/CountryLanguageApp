@@ -1,6 +1,8 @@
 package com.example.countrylanguage.data.source.local
 
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class LocalDataSource @Inject constructor(private val countryLanguageDao: CountryLanguageDao) {
@@ -10,29 +12,21 @@ class LocalDataSource @Inject constructor(private val countryLanguageDao: Countr
 
 
     suspend fun saveCountriesWithLanguages(data: List<CountryWithLanguages>) =
-        with(countryLanguageDao) {
-            data.forEach { countryWithLanguage ->
-                insertCountry(
-                    Country(
-                        countryWithLanguage.country.countryCode,
-                        countryWithLanguage.country.name
-                    )
-                )
-                countryWithLanguage.languages.forEach { language ->
-                    insertLanguage(
-                        Language(
-                            language.languageCode,
-                            language.name
-                        )
-                    )
-                    insertCountryLanguageJoin(
-                        CountryLanguageJoin(
-                            countryWithLanguage.country.countryCode,
-                            language.languageCode
-                        )
+        withContext(Dispatchers.IO) {
+            val countries = data.map { it.country }
+            val languages = data.flatMap { it.languages }.distinctBy { it.languageCode }
+            val joins = data.flatMap { countryWithLanguages ->
+                countryWithLanguages.languages.map { language ->
+                    CountryLanguageJoin(
+                        countryWithLanguages.country.countryCode,
+                        language.languageCode
                     )
                 }
             }
+
+            countryLanguageDao.insertCountries(countries)
+            countryLanguageDao.insertLanguages(languages)
+            countryLanguageDao.insertCountryLanguageJoins(joins)
         }
 
 }

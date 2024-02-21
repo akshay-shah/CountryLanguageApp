@@ -4,7 +4,6 @@ import com.example.countrylanguage.data.model.CountryEntity
 import com.example.countrylanguage.data.model.CountryLanguageDataEntity
 import com.example.countrylanguage.data.model.CountryLanguageEntity
 import com.example.countrylanguage.data.model.LanguageEntity
-import com.example.countrylanguage.data.source.local.CountryLanguageJoin
 import com.example.countrylanguage.data.source.local.CountryWithLanguages
 
 val listCountryWithLanguages = listOf(
@@ -28,4 +27,18 @@ val countryLanguageEntity = CountryLanguageEntity(
     )
 )
 
-val countryLanguageJoin = CountryLanguageJoin("US", "en")
+val insertDBCountryWithLanguages = listOf<CountryWithLanguages>(
+    CountryWithLanguages(
+        country = CountryModel("US", "United States"),
+        languages = listOf(LanguageModel("en", "English"))
+    ),
+    CountryWithLanguages(
+        country = CountryModel("IN", "India"),
+        languages = listOf(LanguageModel("hi", "Hindi"))
+    ),
+    CountryWithLanguages(
+        country = CountryModel("FR", "France"),
+        languages = listOf(LanguageModel("fr", "french"))
+    )
+
+)

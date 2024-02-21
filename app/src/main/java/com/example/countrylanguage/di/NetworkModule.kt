@@ -1,10 +1,6 @@
 package com.example.countrylanguage.di
 
-import com.example.countrylanguage.data.Repository
-import com.example.countrylanguage.data.source.local.CountryLanguageDao
-import com.example.countrylanguage.data.source.local.LocalDataSource
 import com.example.countrylanguage.data.source.remote.ApiService
-import com.example.countrylanguage.data.source.remote.RemoteDataSource
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

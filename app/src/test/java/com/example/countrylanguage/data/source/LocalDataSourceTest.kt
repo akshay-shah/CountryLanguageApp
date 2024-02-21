@@ -1,8 +1,9 @@
 package com.example.countrylanguage.data.source
 
-import com.example.countrylanguage.data.countryLanguageJoin
+import com.example.countrylanguage.data.insertDBCountryWithLanguages
 import com.example.countrylanguage.data.listCountryWithLanguages
 import com.example.countrylanguage.data.source.local.CountryLanguageDao
+import com.example.countrylanguage.data.source.local.CountryLanguageJoin
 import com.example.countrylanguage.data.source.local.LocalDataSource
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
@@ -57,12 +58,20 @@ class LocalDataSourceTest {
 
     @Test
     fun `saveCountriesWithLanguages should call CountryLanguageDao insert methods`() = runTest {
-        val data = listCountryWithLanguages
 
-        localDataSource.saveCountriesWithLanguages(data)
+        val countries = insertDBCountryWithLanguages.map { it.country }
+        val languages =
+            insertDBCountryWithLanguages.flatMap { it.languages }.distinctBy { it.languageCode }
+        val joins = insertDBCountryWithLanguages.flatMap { countryWithLanguages ->
+            countryWithLanguages.languages.map { language ->
+                CountryLanguageJoin(countryWithLanguages.country.countryCode, language.languageCode)
+            }
+        }
 
-        verify(countryLanguageDao).insertCountry(listCountryWithLanguages[0].country)
-        verify(countryLanguageDao).insertLanguage(listCountryWithLanguages[0].languages[0])
-        verify(countryLanguageDao).insertCountryLanguageJoin(countryLanguageJoin)
+        localDataSource.saveCountriesWithLanguages(insertDBCountryWithLanguages)
+
+        verify(countryLanguageDao).insertCountries(countries)
+        verify(countryLanguageDao).insertLanguages(languages)
+        verify(countryLanguageDao).insertCountryLanguageJoins(joins)
     }
 }

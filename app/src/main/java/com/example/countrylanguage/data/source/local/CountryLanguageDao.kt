@@ -11,13 +11,13 @@ import kotlinx.coroutines.flow.Flow
 interface CountryLanguageDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertCountry(country: Country)
+    suspend fun insertCountries(countries: List<Country>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertLanguage(language: Language)
+    suspend fun insertLanguages(languages: List<Language>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertCountryLanguageJoin(crossRef: CountryLanguageJoin)
+    suspend fun insertCountryLanguageJoins(joins: List<CountryLanguageJoin>)
 
     @Transaction
     @Query("SELECT * FROM Country")
